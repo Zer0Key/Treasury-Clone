@@ -1,5 +1,6 @@
 import java.util.List;
 import java.util.Random;
+// @author Gunnar Hormann
 
 /**
  * Holds the state of one players board
