@@ -1,6 +1,8 @@
 import java.util.List;
 import java.util.Random;
-// @author Gunnar Hormann
+/** 
+ * @author Gunnar Hormann
+*/
 
 /**
  * Holds the state of one players board
@@ -19,6 +21,8 @@ public class Board {
 
     /**
      * Create a new Board and hide treasures
+     * Iterates through fields and fills them with dots
+     * Hiding treasures not yet implemented
      */
     public Board() {
         for (int i = 0; i < BOARD_SIZE; i++) {
@@ -52,14 +56,18 @@ public class Board {
      * @param hideShips if TRUE, replaces ships by empty fields in output
      */
     public void print(boolean hideShips) {
-        /* print column headers A - J */
+        /** print column headers A - J 
+         * Why A - J? Shoundn't it be A - E twice?
+         * I don't get this one
+        */
         System.out.print("# ");
         for (int x = 0; x < fields[0].length; x++) {
-            char column = (char) (x + 65);
+            char column = (char) (x + 65); // Why 65? Shouldn't column 0 be empty or skipped?
             System.out.print(" " + column);
         }
         System.out.println();
 
+        /**This one makes sense to me */
         for (int y = 0; y < fields.length; y++) {
             /* print row number */
             int rowNumber = y + 1;
@@ -76,7 +84,10 @@ public class Board {
             System.out.println();
         }
     }
-
+    /** 
+     * Converts the board array to a string
+     * @return String representation of the board
+     */
     public String exportAsString() {
         StringBuilder builder = new StringBuilder();
         for (int y = 0; y < BOARD_SIZE; y++) {
@@ -100,7 +111,12 @@ public class Board {
         }
         return true;
     }
-
+    /**
+     * Returns content of specified array index
+     * @param x Column index of fields array
+     * @param y Row index of fields array
+     * @return content of specified array index
+     */
     public char getField(int x, int y) {
         return fields[x][y];
     }

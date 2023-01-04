@@ -6,8 +6,15 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Scanner;
 
+/** 
+ * @author Gunnar Hormann
+*/
+
 /**
  * Requires Java 11 or higher.
+ * Contains main method to initialize the game
+ * Provides methods for loading, saving and resuming the game
+ * as well as the main menu
  */
 public class TreasuryHuntApp {
 
@@ -19,6 +26,10 @@ public class TreasuryHuntApp {
         treasuryHuntApp.mainMenu();
     }
 
+    /**
+     * Main menu of the game
+     * not yet implemented
+     */
     private void mainMenu() {
 
         // TODO print main menu to the console. Let user select an option. (s. Aufgabe 4)

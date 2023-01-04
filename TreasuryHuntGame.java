@@ -2,6 +2,10 @@
 import java.util.Random;
 import java.util.Scanner;
 
+/** 
+ * @author Gunnar Hormann
+*/
+
 /**
  * An instance of this class holds the state of a running match and the game logic.
  */
@@ -44,7 +48,7 @@ public class TreasuryHuntGame {
      */
     public void run() {
         running = true;
-        System.out.println("Spiel gestartet. Drücke ENTER während der Zieleingabe, im zum Hauptmenü zurückzukehren.");
+        System.out.println("Spiel gestartet. Drücke ENTER während der Zieleingabe, um zum Hauptmenü zurückzukehren.");
 
         while (running) {
             playersTurn();
@@ -52,6 +56,12 @@ public class TreasuryHuntGame {
         }
     }
 
+    /**
+     * Players turn during game loop
+     * Allows player to pause or resume
+     * as well as exit the game loop
+     * not yet fully implemented
+     */
     private void playersTurn() {
 
         System.out.println("Spieler ist am Zug.");
@@ -71,6 +81,10 @@ public class TreasuryHuntGame {
     }
 
 
+    /**
+     * Opponents turn during game loop
+     * not yet fully implemented
+     */
     private void villainsTurn() {
 
         System.out.println("Gegner ist am Zug.");
@@ -95,6 +109,7 @@ public class TreasuryHuntGame {
 
     /**
      * Gets an array with the two coordinates (x,y) the villain shoots at.
+     * Gives feedback to the player about opponents actions
      */
     private int[] getVillainSearch() {
         int x;
@@ -111,7 +126,10 @@ public class TreasuryHuntGame {
         return shot;
     }
 
-
+    /**
+     * Checks if the game is finished
+     * @return true if the game is finished
+     */
     public boolean isFinished() {
         return playerBoard.areAllTreasuresFound() || villainBoard.areAllTreasuresFound();
     }
@@ -119,6 +137,7 @@ public class TreasuryHuntGame {
 
     /**
      * Converts alphanumeric board coordinates to array indexes, e.g. A1 to [0,0]
+     * @return array index of the board
      */
     public static int[] convertCoordinatesToInt(String input) {
         int x = input.toUpperCase().charAt(0) - 65;
@@ -128,6 +147,7 @@ public class TreasuryHuntGame {
 
     /**
      * Converts array indexes to ahlphanumeric board coordinates, e.g. [0,0] to A1
+     * @return alphanumeric string of array index
      */
     public static String convertCoordinatesToString(int[] input) {
         char x = (char) (input[0] + 65);
