@@ -20,27 +20,170 @@ public class TreasuryHuntApp {
 
     private TreasuryHuntGame game;
     private final Path saveFilePath = Path.of("treasuryHunt.save");
-
+    /**
+     * Main method for running the game
+     */
     public static void main(String[] args) {
         TreasuryHuntApp treasuryHuntApp = new TreasuryHuntApp();
+        treasuryHuntApp.splashScreen();
         treasuryHuntApp.mainMenu();
+    }
+    /**
+     * Splash screen during startup
+     */
+    private void splashScreen() {
+        clearScreen();
+        System.out.println("              Schatzsuche");
+        System.out.println();
+        System.out.println("                    |");
+        System.out.println("                    |");
+        System.out.println("             |    __-__        ");
+        System.out.println("           __-__ /  | (            ");
+        System.out.println("          /  | ((   | |        ");
+        System.out.println("        /(   | ||___|_.  .|        ");
+        System.out.println("      .' |___|_|`---|-'.' (            ");
+        System.out.println(" '-._/_| (   |\\     |.'    \\        ");
+        System.out.println("     '-._|.-.|-.    |'-.____'.        ");
+        System.out.println("         |------------------'        ");
+        System.out.println("          `----------------'");
+        System.out.println();
+        System.out.println("Dieses Spiel wird durch Zahleneingaben navigiert");
+        System.out.println();
+        System.out.println("Drücke Enter um ins Hauptmenü zu gelangen");
+        System.out.println();
+        new Scanner(System.in).nextLine();
     }
 
     /**
      * Main menu of the game
-     * not yet implemented
+     * Allows for the user to select one of five options
+     * Not all optians are allways available depending on the game state
      */
     private void mainMenu() {
+        clearScreen();
+        /*Create array with menu options */
+        String[] menuOptions = new String[] {"Neues Spiel starten", "Spiel fortsetzen", "Spiel laden", "Spiel speichern", "Spiel beenden"};
 
-        // TODO print main menu to the console. Let user select an option. (s. Aufgabe 4)
+        int count = 0;
+        /*Iterate through array and only display available options */
+        for(String element : menuOptions) {
+            count++;
+            if(count == 2 || count == 4 && !hasRunningGame()) {
+                continue;
+            }
+            if(count == 3 && !hasSavedGame()) {
+                continue;
+            }
+            System.out.println("(" + count + ")" + element);
+        }
+        count = 0;
 
+        /**
+         * Gets user input to navigate the menu
+         * Handles input from user that tries to access hidden fields
+         * Handles invalid user input
+         */
+        Scanner navInput = new Scanner(System.in);
+        if(navInput.hasNextInt()) {
+        int input = navInput.nextInt();
+        switch (input) {
+            case 1:
+            startNewGame();
+            break;
 
-        startNewGame();
+            case 2:
+            if(!hasRunningGame()) {
+                /*Print error message, wait 3 seconds and then return to main menu */
+                clearScreen();
+                System.out.println("Momentan läuft kein Spiel! \n \nStarte ein neues Spiel!");
+                System.out.println();
+                System.out.println("Kehre zum Hauptmenü zurück...");
+                waitFor(3000);
+                mainMenu();
+            } else {continueGame();}
+            break;
 
+            case 3:
+            if(!hasSavedGame()) {
+                /*Print error message, wait 3 seconds and then return to main menu */
+                clearScreen();
+                System.out.println("Kein gespeichertes Spiel gefunden! \n \nStarte ein neues Spiel!");
+                System.out.println();
+                System.out.println("Kehre zum Hauptmenü zurück...");
+                waitFor(3000);
+                mainMenu();
+            } else {loadGame();}
+            break;
 
+            case 4:
+            if(!hasRunningGame()) {
+                /*Print error message, wait 3 seconds and then return to main menu */
+                clearScreen();
+                System.out.println("Kein laufendes Spiel zum speichern gefunden! \n \nStarte ein neues Spiel!");
+                System.out.println();
+                System.out.println("Kehre zum Hauptmenü zurück...");
+                waitFor(3000);
+                mainMenu();
+            } else {saveGame();}
+            break;
 
+            case 5:
+            clearScreen();
+            System.out.println("Bist du dir sicher, dass du das Spiel beenden willst? \n \nY/N");
+            /*Wait for user input and either exit app or return to main menu */
+            while (true) {
+                String inputExit = new Scanner(System.in).nextLine();
+                if(inputExit.equalsIgnoreCase("Y")) {
+                    System.exit(0);
+                } else if (inputExit.equalsIgnoreCase("N")) { 
+                    mainMenu();
+                    break;}
+                else {
+                    System.out.println("Falsche Eingabe. Bitte Y oder N eingeben!");
+                }
+            }
+            break;
 
+            default:
+            /*In case any integr other than 1-5 is entered
+             * Displays error message and reloads main menu with delay
+             */
+            clearScreen();
+            System.out.println("Falsche Eingabe!");
+            System.out.println();
+            System.out.println("Kehre zum Hauptmenü zurück...");
+            waitFor(3000);
+            mainMenu();
+            }
+        } else {
+            /*In case of wrong input returns error message and reloads main menu */
+            clearScreen();
+            System.out.println("Falsche Eingabe!\nBitte Zahl eingeben!");
+            System.out.println();
+            System.out.println("Kehre zum Hauptmenü zurück...");
+            navInput.next();
+            waitFor(3000);
+            mainMenu();
+        }
+    }
+    /**
+     * Method for waiting for a certain amount of time
+     * @param millis Integer of milliseconds to wait
+     */
+    private void waitFor(int millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
+    }
+    /**
+     * Method for clearing the screen
+     */
+    private void clearScreen() {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
     }
 
     /**
