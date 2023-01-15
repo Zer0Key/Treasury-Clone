@@ -33,7 +33,7 @@ public class TreasuryHuntApp {
      */
     private void splashScreen() {
         clearScreen();
-        System.out.println("              Schatzsuche");
+        System.out.println("               Schatzsuche");
         System.out.println();
         System.out.println("                    |");
         System.out.println("                    |");
@@ -49,7 +49,7 @@ public class TreasuryHuntApp {
         System.out.println();
         System.out.println("Dieses Spiel wird durch Zahleneingaben navigiert");
         System.out.println();
-        System.out.println("Drücke Enter um ins Hauptmenü zu gelangen");
+        System.out.println("Drücke ENTER um ins Hauptmenü zu gelangen");
         System.out.println();
         new Scanner(System.in).nextLine();
     }
@@ -88,6 +88,7 @@ public class TreasuryHuntApp {
         int input = navInput.nextInt();
         switch (input) {
             case 1:
+            clearScreen();
             startNewGame();
             break;
 
