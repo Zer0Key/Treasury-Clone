@@ -170,4 +170,8 @@ public class Board {
     public char getField(int x, int y) {
         return fields[x][y];
     }
+
+    public void setField(int x, int y, char value) {
+        fields[x][y] = value;
+    }
 }
