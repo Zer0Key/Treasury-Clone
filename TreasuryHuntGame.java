@@ -41,6 +41,15 @@ public class TreasuryHuntGame {
         this.villainBoard = villainBoard;
     }
 
+    public Board getPlayerBoard() {
+        return playerBoard;
+    }
+
+    public Board getVillainBoard() {
+        return villainBoard;
+    }
+
+
 
     /**
      * Main game loop. Keep running to play.
@@ -48,6 +57,7 @@ public class TreasuryHuntGame {
      */
     public void run() {
         running = true;
+        TreasuryHuntApp.clearScreen();
         System.out.println("Spiel gestartet. Drücke ENTER während der Zieleingabe, um zum Hauptmenü zurückzukehren.");
 
         while (running) {
@@ -64,22 +74,48 @@ public class TreasuryHuntGame {
      */
     private void playersTurn() {
 
-        System.out.println("Spieler ist am Zug.");
-        villainBoard.print(hideVillainShips);
+        boolean miss = false;
 
-        int[] playerSearch = null;
-
-        // TODO (s. Aufgabe 5)
-
-        // player wants to exit game
-        if (playerSearch == null) {
-            System.out.println("Spiel pausiert.");
-            running = false;
-        }
-
-        pause();
+        while (true) {
+            while(!miss) {
+                while (true) {
+                    System.out.println("Spieler ist am Zug.");
+                    villainBoard.print(hideVillainShips);
+                    System.out.println("Gebe die Koordinaten ein, an denen du suchen willst! Z.B. A1");
+                    System.out.println("Drücke ENTER nach deiner Eingabe um sie zu bestätigen");
+                    Scanner playerAim = new Scanner(System.in);
+                    String input = playerAim.nextLine();
+                
+                    if (input.isEmpty()) {
+                        System.out.println("Spiel pausiert.");
+                        running = false;
+                        break;
+                    }
+                
+                    // Validate input
+                    if (!input.matches("[A-Ea-e][1-5]")) {
+                        System.out.println("Ungültige Eingabe. Bitte versuche es erneut.");
+                        continue;
+                    }
+                
+                    int[] playerSearch = convertCoordinatesToInt(input);
+                    int x = playerSearch[0];
+                    int y = playerSearch[1];
+                    if (villainBoard.getField(x, y) == 'O') {
+                        System.out.println("Treffer!");
+                        villainBoard.setField(x, y, 'O');
+                    } else {
+                        System.out.println("Daneben!");
+                        villainBoard.setField(x, y, '-');
+                        miss = true;
+                    } 
+                    break;
+                }
+                pause();
+            }
+        }    
     }
-
+    
 
     /**
      * Opponents turn during game loop

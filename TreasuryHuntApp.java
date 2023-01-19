@@ -52,6 +52,7 @@ public class TreasuryHuntApp {
         System.out.println("Drücke ENTER um ins Hauptmenü zu gelangen");
         System.out.println();
         new Scanner(System.in).nextLine();
+        
     }
 
     /**
@@ -191,7 +192,7 @@ public class TreasuryHuntApp {
     /**
      * Method for clearing the screen
      */
-    public void clearScreen() {
+    public static void clearScreen() {
         System.out.print("\033[H\033[2J");
         System.out.flush();
     }
