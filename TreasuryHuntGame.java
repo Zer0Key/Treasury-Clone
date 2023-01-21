@@ -76,14 +76,13 @@ public class TreasuryHuntGame {
      * Players turn during game loop
      * Allows player to pause or resume
      * as well as exit the game loop
-     * not yet fully implemented
      */
     private void playersTurn() {
 
         boolean miss = false;
 
-        while (running) {
-            while(!miss && !isFinished()) {
+        while (!miss && running) {
+            while(!isFinished()) {
                 while (true) {
                     System.out.println("Spieler ist am Zug.");
                     villainBoard.print(hideVillainShips);
@@ -157,13 +156,46 @@ public class TreasuryHuntGame {
      */
     private void villainsTurn() {
 
-        System.out.println("Gegner ist am Zug.");
-        playerBoard.print(false);
-        int[] villainSearch = getVillainSearch();
+        boolean miss = false;
 
-        // TODO (s. Aufgabe 6)
+        while(!miss && true){
+            while(!isFinished()) {
+                while(true){
 
-        pause();
+                    System.out.println("Gegner ist am Zug.");
+                    playerBoard.print(false);
+                    int[] villainSearch = getVillainSearch();
+                    int x = villainSearch[0];
+                    int y = villainSearch[1];
+                    if (playerBoard.getField(x, y) == Board.TREASURE) {
+                        System.out.println();
+                        System.out.println("Treffer!");
+                        System.out.println();
+                        playerBoard.setField(x, y, Board.HIT);
+                        isFinished();
+                    } else {
+                        System.out.println();
+                        System.out.println("Daneben!");
+                        System.out.println();
+                        playerBoard.setField(x, y, Board.NO_TREASURE_FOUND);
+                        miss = true;
+                    }
+                    break;
+                }
+                if(!isFinished()){
+                    pause();
+                }
+                break;
+            }
+            if (isFinished()) {
+                System.out.println("Der Gegner hat gewonnen :(");
+                System.out.println();
+                System.out.println("Drücke ENTER um zum Hauptmenü zurück zu kehren!");
+                new Scanner(System.in).nextLine();
+                running = false;
+                break;
+            }
+        }
     }
 
     /**
