@@ -14,10 +14,13 @@ public class TreasuryHuntGame {
     final Board playerBoard;
     final Board villainBoard;
 
+
+
     /**
      * Set to TRUE to keep the game loop running. Set to FALSE to exit.
      */
     boolean running;
+
 
     /**
      * When playing, enemy treasures should be hidden from the player.
@@ -31,6 +34,7 @@ public class TreasuryHuntGame {
     public TreasuryHuntGame() {
         playerBoard = new Board();
         villainBoard = new Board();
+
     }
 
     /**
@@ -59,6 +63,8 @@ public class TreasuryHuntGame {
         running = true;
         TreasuryHuntApp.clearScreen();
         System.out.println("Spiel gestartet. Drücke ENTER während der Zieleingabe, um zum Hauptmenü zurückzukehren.");
+        TreasuryHuntApp.waitFor(1500);
+        TreasuryHuntApp.clearScreen();
 
         while (running) {
             playersTurn();
@@ -76,8 +82,8 @@ public class TreasuryHuntGame {
 
         boolean miss = false;
 
-        while (true) {
-            while(!miss) {
+        while (running) {
+            while(!miss && !isFinished()) {
                 while (true) {
                     System.out.println("Spieler ist am Zug.");
                     villainBoard.print(hideVillainShips);
@@ -88,7 +94,17 @@ public class TreasuryHuntGame {
                 
                     if (input.isEmpty()) {
                         System.out.println("Spiel pausiert.");
-                        running = false;
+                        System.out.println("Willst du zum Hauptmenü zurückkehren?");
+                        Scanner returnMain = new Scanner(System.in);
+                        String inputReturn = returnMain.nextLine();
+                        if(inputReturn.equalsIgnoreCase("Y")) {
+                            running = false;
+                            break;
+                        } else if (inputReturn.equalsIgnoreCase("N")) {
+                            continue;
+                        } else {
+                            System.out.println("Falsche Eingabe! Bitte Y oder N eingeben!");
+                        }
                         break;
                     }
                 
@@ -101,19 +117,37 @@ public class TreasuryHuntGame {
                     int[] playerSearch = convertCoordinatesToInt(input);
                     int x = playerSearch[0];
                     int y = playerSearch[1];
-                    if (villainBoard.getField(x, y) == 'O') {
+                    if (villainBoard.getField(x, y) == Board.TREASURE) {
+                        System.out.println();
                         System.out.println("Treffer!");
-                        villainBoard.setField(x, y, 'O');
+                        System.out.println();
+                        villainBoard.setField(x, y, Board.HIT);
+                        isFinished();
                     } else {
+                        System.out.println();
                         System.out.println("Daneben!");
-                        villainBoard.setField(x, y, '-');
+                        System.out.println();
+                        villainBoard.setField(x, y, Board.NO_TREASURE_FOUND);
                         miss = true;
-                    } 
+                    }
                     break;
                 }
-                pause();
+                if(!isFinished()) {
+                    pause();
+                }
+                break;
             }
-        }    
+            if (isFinished()) {
+                System.out.println("Du hast gewonnen!");
+                System.out.println();
+                System.out.println("Drücke ENTER um zum Hauptmenü zurück zu kehren!");
+                new Scanner(System.in).nextLine();
+                running = false;
+                break;
+            }
+
+        }
+            
     }
     
 
