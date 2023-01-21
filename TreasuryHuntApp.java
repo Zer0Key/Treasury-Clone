@@ -60,17 +60,16 @@ public class TreasuryHuntApp {
      * Allows for the user to select one of five options
      * Not all optians are allways available depending on the game state
      */
-    private void mainMenu() {
+    public void mainMenu() {
         while(true){
             clearScreen();
             /*Create array with menu options */
             String[] menuOptions = new String[] {"Neues Spiel starten", "Spiel fortsetzen", "Spiel laden", "Spiel speichern", "Spiel beenden"};
-
             int count = 0;
             /*Iterate through array and only display available options */
             for(String element : menuOptions) {
                 count++;
-                if(count == 2 || count == 4 && !hasRunningGame()) {
+                if((count == 2 || count == 4) && !hasRunningGame()) {
                     continue;
                 }
                 if(count == 3 && !hasSavedGame()) {
@@ -103,8 +102,8 @@ public class TreasuryHuntApp {
                     System.out.println("Kehre zum Hauptmenü zurück...");
                     waitFor(3000);
                 } else {
+                    clearScreen();
                     continueGame();
-                    return;
                 }
                 break;
 
@@ -120,7 +119,8 @@ public class TreasuryHuntApp {
                     System.out.println("Lade Spiel...");
                     waitFor(1000);
                     loadGame();
-                    return;
+                    clearScreen();
+                    continueGame();
                 }
                 break;
 
@@ -181,7 +181,7 @@ public class TreasuryHuntApp {
      * Method for waiting for a certain amount of time
      * @param millis Integer of milliseconds to wait
      */
-    private void waitFor(int millis) {
+    public static void waitFor(int millis) {
         try {
             Thread.sleep(millis);
         } catch (InterruptedException e) {
