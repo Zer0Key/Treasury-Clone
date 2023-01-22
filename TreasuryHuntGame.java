@@ -64,7 +64,7 @@ public class TreasuryHuntGame {
         running = true;
         TreasuryHuntApp.clearScreen();
         System.out.println("Spiel gestartet. Drücke ENTER während der Zieleingabe, um zum Hauptmenü zurückzukehren.");
-        TreasuryHuntApp.waitFor(1500);
+        pause();
         TreasuryHuntApp.clearScreen();
 
         while (running) {
@@ -85,13 +85,16 @@ public class TreasuryHuntGame {
         while (!miss && running) {
             while(!isFinished()) {
                 while (true) {
+
+                    /*Get user input */
                     System.out.println("Spieler ist am Zug.");
                     villainBoard.print(hideVillainShips);
                     System.out.println("Gebe die Koordinaten ein, an denen du suchen willst! Z.B. A1");
                     System.out.println("Drücke ENTER nach deiner Eingabe um sie zu bestätigen");
                     Scanner playerAim = new Scanner(System.in);
                     String input = playerAim.nextLine();
-                
+                    
+                    /*Let user return to main menu */
                     if (input.isEmpty()) {
                         System.out.println("Spiel pausiert.");
                         System.out.println("Willst du zum Hauptmenü zurückkehren?");
@@ -108,12 +111,13 @@ public class TreasuryHuntGame {
                         break;
                     }
                 
-                    // Validate input
+                    /*Validate user input for correct format */
                     if (!input.matches("[A-Ea-e][1-5]")) {
                         System.out.println("Ungültige Eingabe. Bitte versuche es erneut.");
                         continue;
                     }
                 
+                    /*Compare user input with vilain board and output response */
                     int[] playerSearch = convertCoordinatesToInt(input);
                     int x = playerSearch[0];
                     int y = playerSearch[1];
@@ -132,11 +136,13 @@ public class TreasuryHuntGame {
                     }
                     break;
                 }
+                /*Pause after every player turn */
                 if(!isFinished()) {
                     pause();
                 }
                 break;
             }
+            /*Check for win condition and end game if true */
             if (isFinished()) {
                 System.out.println("Du hast gewonnen!");
                 System.out.println();
@@ -163,6 +169,7 @@ public class TreasuryHuntGame {
             while(!isFinished()) {
                 while(true){
 
+                    /*Report to user what the vilain is doing */
                     System.out.println("Gegner ist am Zug.");
                     playerBoard.print(false);
                     int[] villainSearch = getVillainSearch();
@@ -212,11 +219,12 @@ public class TreasuryHuntGame {
 
     /**
      * Gets an array with the two coordinates (x,y) the villain shoots at.
+     * Does not shoot the same coordinates twice.
      * Gives feedback to the player about opponents actions
      */
     private int[] getVillainSearch() {
         
-        ArrayList<int[]> attemptedShots = new ArrayList<int[]>();
+        ArrayList<int[]> attemptedShots = new ArrayList<int[]>(); //Stores coordinates of previous shots
         int[] shot = new int[2];
         boolean validShot = false;
         Random rand = new Random();
@@ -231,6 +239,7 @@ public class TreasuryHuntGame {
             }
         }
         System.out.println("Gegner sucht auf " + convertCoordinatesToString(shot));
+        TreasuryHuntApp.waitFor(1000);
         return shot;
         }
 
