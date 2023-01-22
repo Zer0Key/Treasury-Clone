@@ -21,6 +21,7 @@ import java.util.TreeMap;
  * Contains main method to initialize the game
  * Provides methods for loading, saving and resuming the game
  * as well as the main menu
+ * Includes leaderboard and methods for saving and loading the leaderboard
  */
 public class TreasuryHuntApp {
 
@@ -67,8 +68,9 @@ public class TreasuryHuntApp {
 
     /**
      * Main menu of the game
-     * Allows for the user to select one of five options
+     * Allows for the user to select one of six options
      * Not all optians are allways available depending on the game state
+     * Deliberatly not changing the numbering of the options to allow user to build muscle memory for a certain option
      */
     public void mainMenu() {
         while(true){
@@ -98,11 +100,14 @@ public class TreasuryHuntApp {
             if(navInput.hasNextInt()) {
             int input = navInput.nextInt();
             switch (input) {
+
+                // Starting a new game
                 case 1:
                 clearScreen();
                 startNewGame();
                 break;
 
+                // Show the leaderboard
                 case 2:
                 if(!hasSavedLeaderBoard()) {
                     clearScreen();
@@ -119,6 +124,7 @@ public class TreasuryHuntApp {
                 }
                 break;
 
+                // Continue running game
                 case 3:
                 if(!hasRunningGame()) {
                     /*Print error message, wait 3 seconds and then return to main menu */
@@ -133,6 +139,7 @@ public class TreasuryHuntApp {
                 }
                 break;
 
+                // Load saved game
                 case 4:
                 if(!hasSavedGame()) {
                     /*Print error message, wait 3 seconds and then return to main menu */
@@ -150,6 +157,7 @@ public class TreasuryHuntApp {
                 }
                 break;
 
+                // Save a running game
                 case 5:
                 if(!hasRunningGame()) {
                     /*Print error message, wait 3 seconds and then return to main menu */
@@ -166,6 +174,7 @@ public class TreasuryHuntApp {
                 }
                 break;
 
+                // Exit the program
                 case 6:
                 clearScreen();
                 System.out.println("Bist du dir sicher, dass du das Spiel beenden willst? \n \nY/N");
@@ -234,11 +243,11 @@ public class TreasuryHuntApp {
         }
 
         try {
-            String saveGame = Files.readString(saveFilePath, StandardCharsets.UTF_8);
-            String[] boards = saveGame.split("\n");
-            Board playerBoard = new Board(boards[0]);
+            String saveGame = Files.readString(saveFilePath, StandardCharsets.UTF_8); // Load saved game to String
+            String[] boards = saveGame.split("\n"); // Convert string to array by splitting at newline
+            Board playerBoard = new Board(boards[0]); // Create boards for player and vilain
             Board villainBoard = new Board(boards[1]);
-            this.game = new TreasuryHuntGame(playerBoard, villainBoard);
+            this.game = new TreasuryHuntGame(playerBoard, villainBoard); // Create new game with loaded boards
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("Loading failed");
@@ -246,7 +255,7 @@ public class TreasuryHuntApp {
     }
 
     /**
-     * Saves a game into the file "treasuryHunt.save"
+     * Saves a game into the file "treasuryHunt.save" and overwrites if necessary.
      */
     private void saveGame() {
         File file = saveFilePath.toFile();
@@ -255,6 +264,7 @@ public class TreasuryHuntApp {
         try {
             file.createNewFile();
 
+            // Convert boards to String and write to file
             String playerBoard = game.playerBoard.exportAsString();
             String villainBoard = game.villainBoard.exportAsString();
             Files.writeString(file.toPath(), playerBoard + villainBoard, StandardCharsets.UTF_8);
@@ -281,14 +291,24 @@ public class TreasuryHuntApp {
         return leaderBoardPath.toFile().exists();
     }
 
+    /**
+     * Checks if there is a running game
+     * @return true if there is a game, false otherwise
+     */
     private boolean hasRunningGame() {
         return !(game == null || game.isFinished());
     }
 
+    /**
+     * Resumes the current game
+     */
     private void continueGame() {
         this.game.run();
     }
 
+    /**
+     * Creates a new game and calls continueGame to resume it.
+     */
     private void startNewGame() {
         this.game = new TreasuryHuntGame();
         continueGame();

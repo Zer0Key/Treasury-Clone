@@ -30,7 +30,7 @@ public class TreasuryHuntGame {
      * When playing, enemy treasures should be hidden from the player.
      * Change below to FALSE for testing purposes during development of this program.
      */
-    private final boolean hideVillainShips = false;
+    private final boolean hideVillainShips = true;
 
     /**
      * Creates a new game with new boards.
@@ -54,6 +54,7 @@ public class TreasuryHuntGame {
     /**
      * Main game loop. Keep running to play.
      * Interrupt the loop to get back to main menu.
+     * Gets user name for leaderboard
      */
     public void run() {
         running = true;
@@ -114,7 +115,9 @@ public class TreasuryHuntGame {
                         continue;
                     }
                 
-                    /*Compare user input with vilain board and output response */
+                    /*Compare user input with vilain board and output response
+                     * add attempt for each input for leaderboard
+                     */
                     int[] playerSearch = convertCoordinatesToInt(input);
                     int x = playerSearch[0];
                     int y = playerSearch[1];
@@ -135,8 +138,10 @@ public class TreasuryHuntGame {
                     }
                     break;
                 }
-                /*Pause after every player turn */
-                if(!isFinished()) {
+                /*Pause after every player turn
+                 * Don't pause when exiting the game
+                 */
+                if(!isFinished() && running) {
                     pause();
                 }
                 break;
@@ -159,7 +164,6 @@ public class TreasuryHuntGame {
 
     /**
      * Opponents turn during game loop
-     * not yet fully implemented
      */
     private void villainsTurn() {
 
@@ -221,6 +225,7 @@ public class TreasuryHuntGame {
      * Gets an array with the two coordinates (x,y) the villain shoots at.
      * Does not shoot the same coordinates twice.
      * Gives feedback to the player about opponents actions
+     * @return Targeted coordinates of the AI
      */
     private int[] getVillainSearch() {
         
@@ -233,7 +238,7 @@ public class TreasuryHuntGame {
             shot[0] = rand.nextInt(Board.BOARD_SIZE);
             shot[1] = rand.nextInt(Board.BOARD_SIZE);
     
-            if(!attemptedShots.contains(shot)) {
+            if(!attemptedShots.contains(shot)) { // Check if target is already in the list
                 validShot = true;
                 attemptedShots.add(shot);
             }

@@ -45,7 +45,7 @@ public class Board {
     public void placeTreasures() {
 
         Random rand = new Random();
-        Set<String> occupiedSpots = new HashSet<String>();
+        Set<String> occupiedSpots = new HashSet<String>(); // HashSet because it doesn't allow duplicates
 
         /* Placing large treasure 
          * 
@@ -74,7 +74,7 @@ public class Board {
             String spot = smallX + "," + smallY; // keeping track of where treasure is placed
 
             /* Checking if spot is free as well as not next to another occupied spot
-             * quite convoluted condition for if statement could use improvement
+             * checks if spot is free as well as not next to another occupied spot
              */
             if(fields[smallX][smallY] == EMPTY &&
                 !occupiedSpots.contains(spot) &&
@@ -169,6 +169,12 @@ public class Board {
         return fields[x][y];
     }
 
+    /**
+     * Sets the specified value to the specified field index
+     * @param x Column index of value
+     * @param y Row index of value
+     * @param value Value to be set
+     */
     public void setField(int x, int y, char value) {
         fields[x][y] = value;
     }
