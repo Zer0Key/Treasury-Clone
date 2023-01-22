@@ -1,4 +1,5 @@
 
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -214,19 +215,24 @@ public class TreasuryHuntGame {
      * Gives feedback to the player about opponents actions
      */
     private int[] getVillainSearch() {
-        int x;
-        int y;
-
-        // Strategy to aim a shot: Pick a random field that is empty
-        do {
-            x = new Random().nextInt(Board.BOARD_SIZE);
-            y = new Random().nextInt(Board.BOARD_SIZE);
-        } while (playerBoard.getField(x, y) != Board.EMPTY);
-
-        int[] shot = new int[]{x, y};
+        
+        ArrayList<int[]> attemptedShots = new ArrayList<int[]>();
+        int[] shot = new int[2];
+        boolean validShot = false;
+        Random rand = new Random();
+    
+        while(!validShot){
+            shot[0] = rand.nextInt(1, Board.BOARD_SIZE);
+            shot[1] = rand.nextInt(1, Board.BOARD_SIZE);
+    
+            if(!attemptedShots.contains(shot)) {
+                validShot = true;
+                attemptedShots.add(shot);
+            }
+        }
         System.out.println("Gegner sucht auf " + convertCoordinatesToString(shot));
         return shot;
-    }
+        }
 
     /**
      * Checks if the game is finished
