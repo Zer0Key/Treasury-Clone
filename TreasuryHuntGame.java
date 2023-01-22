@@ -222,8 +222,8 @@ public class TreasuryHuntGame {
         Random rand = new Random();
     
         while(!validShot){
-            shot[0] = rand.nextInt(1, Board.BOARD_SIZE);
-            shot[1] = rand.nextInt(1, Board.BOARD_SIZE);
+            shot[0] = rand.nextInt(Board.BOARD_SIZE);
+            shot[1] = rand.nextInt(Board.BOARD_SIZE);
     
             if(!attemptedShots.contains(shot)) {
                 validShot = true;
@@ -259,7 +259,7 @@ public class TreasuryHuntGame {
      */
     public static String convertCoordinatesToString(int[] input) {
         char x = (char) (input[0] + 65);
-        String y = Integer.toString(input[1]);
+        String y = Integer.toString(input[1] + 1);
         return x + y;
     }
 }
