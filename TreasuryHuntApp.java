@@ -1,10 +1,16 @@
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.TreeMap;
 
 /** 
  * @author Gunnar Hormann
@@ -20,11 +26,15 @@ public class TreasuryHuntApp {
 
     private TreasuryHuntGame game;
     private final Path saveFilePath = Path.of("treasuryHunt.save");
+    private final Path leaderBoardPath = Path.of("leaderBoard.save");
+    private static HashMap<String, Integer> leaderBoard = new HashMap<>();
+
     /**
      * Main method for running the game
      */
     public static void main(String[] args) {
         TreasuryHuntApp treasuryHuntApp = new TreasuryHuntApp();
+        treasuryHuntApp.populateLeaderBoard();
         treasuryHuntApp.splashScreen();
         treasuryHuntApp.mainMenu();
     }
@@ -64,15 +74,15 @@ public class TreasuryHuntApp {
         while(true){
             clearScreen();
             /*Create array with menu options */
-            String[] menuOptions = new String[] {"Neues Spiel starten", "Spiel fortsetzen", "Spiel laden", "Spiel speichern", "Spiel beenden"};
+            String[] menuOptions = new String[] {"Neues Spiel starten", "Rangliste", "Spiel fortsetzen", "Spiel laden", "Spiel speichern", "Spiel beenden"};
             int count = 0;
             /*Iterate through array and only display available options */
             for(String element : menuOptions) {
                 count++;
-                if((count == 2 || count == 4) && !hasRunningGame()) {
+                if((count == 3 || count == 5) && !hasRunningGame()) {
                     continue;
                 }
-                if(count == 3 && !hasSavedGame()) {
+                if(count == 4 && !hasSavedGame()) {
                     continue;
                 }
                 System.out.println("(" + count + ")" + element);
@@ -94,6 +104,22 @@ public class TreasuryHuntApp {
                 break;
 
                 case 2:
+                if(!hasSavedLeaderBoard()) {
+                    clearScreen();
+                    System.out.println("Keine Rangliste gefunden!");
+                    System.out.println();
+                    System.out.println("Kehre zum Hauptmenü zurück...");
+                    waitFor(3000);
+                } else {
+                    clearScreen();
+                    System.out.println("Rangliste: ");
+                    printLeaderBoard();
+                    System.out.println("Drücke ENTER um zu Hauptmenü zurückzukehren!");
+                    new Scanner(System.in).nextLine();
+                }
+                break;
+
+                case 3:
                 if(!hasRunningGame()) {
                     /*Print error message, wait 3 seconds and then return to main menu */
                     clearScreen();
@@ -107,7 +133,7 @@ public class TreasuryHuntApp {
                 }
                 break;
 
-                case 3:
+                case 4:
                 if(!hasSavedGame()) {
                     /*Print error message, wait 3 seconds and then return to main menu */
                     clearScreen();
@@ -124,7 +150,7 @@ public class TreasuryHuntApp {
                 }
                 break;
 
-                case 4:
+                case 5:
                 if(!hasRunningGame()) {
                     /*Print error message, wait 3 seconds and then return to main menu */
                     clearScreen();
@@ -140,13 +166,14 @@ public class TreasuryHuntApp {
                 }
                 break;
 
-                case 5:
+                case 6:
                 clearScreen();
                 System.out.println("Bist du dir sicher, dass du das Spiel beenden willst? \n \nY/N");
                 /*Wait for user input and either exit app or return to main menu */
                 while (true) {
                     String inputExit = new Scanner(System.in).nextLine();
                     if(inputExit.equalsIgnoreCase("Y")) {
+                        saveLeaderBoard();
                         System.exit(0);
                     } else if (inputExit.equalsIgnoreCase("N")) { 
                         break;}
@@ -240,9 +267,18 @@ public class TreasuryHuntApp {
 
     /**
      * Checks if file "treasuryHunt.save" exists
+     * @return when file exists
      */
     private boolean hasSavedGame() {
         return saveFilePath.toFile().exists();
+    }
+
+    /**
+     * Checks if file "leaderBoard.save" exists
+     * @return when file exists
+     */
+    private boolean hasSavedLeaderBoard() {
+        return leaderBoardPath.toFile().exists();
     }
 
     private boolean hasRunningGame() {
@@ -258,4 +294,74 @@ public class TreasuryHuntApp {
         continueGame();
     }
 
+    /**
+     * Adds a new score to the leader board.
+     * @param userName Key of the user to be added to the leaderboard
+     * @param score Value of the score to be added to the leaderboard
+     */
+    public static void addScore(String userName, int score){
+        leaderBoard.put(userName, score);
+    }
+
+    /**
+     * Prints the leaderboard sorted from least attemts to most attemts
+     */
+    public void printLeaderBoard(){
+        Map<String, Integer> sortedLeaderBoard = new TreeMap<>(new ValueComparator(leaderBoard)); // insert leaderboard Hash Map into TreeMap and sort it by score
+        sortedLeaderBoard.putAll(leaderBoard); // insert sorted leaderboard
+        for(Map.Entry<String, Integer> entry : sortedLeaderBoard.entrySet()){ //iterate through all entries and print
+            System.out.println(entry.getKey() + ":" + entry.getValue());
+        }
+    }
+
+    /**
+     * Saves the leaderboard to file and overwrites existing file if necessary
+     */
+    private void saveLeaderBoard() {
+        File file = leaderBoardPath.toFile();
+
+        if (file.exists()) file.delete();
+        try {
+            file.createNewFile();
+
+            // Prepare to write to file
+            FileWriter writer = new FileWriter(file);
+            BufferedWriter bufferedWriter = new BufferedWriter(writer);
+
+            // Iterate through the leaderboard HashMap and write each entry to the file
+            for (Map.Entry<String, Integer> entry : leaderBoard.entrySet()) {
+                bufferedWriter.write(entry.getKey() + ":" + entry.getValue());
+                bufferedWriter.newLine();
+            }
+
+            // Close the writer and file
+            bufferedWriter.close();
+            writer.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Save failed");
+        }
+    }
+
+    /**
+     * Loads the leaderboard from file and populates the leader board hash map.
+     */
+    private void populateLeaderBoard() {
+        if (!hasSavedLeaderBoard()) {
+            return;
+        }
+        
+        try (BufferedReader br = new BufferedReader(new FileReader(leaderBoardPath.toFile()))) { // Open file with reader
+            String line;
+            while ((line = br.readLine()) != null) { // Read line
+                String[] parts = line.split(":"); // Split parts into keys and values
+                leaderBoard.put(parts[0], Integer.parseInt(parts[1])); // populate leaderboard with read keys and values
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Loading failed");
+        }
+    }
+        
 }

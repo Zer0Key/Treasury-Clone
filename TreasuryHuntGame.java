@@ -15,6 +15,9 @@ public class TreasuryHuntGame {
     final Board playerBoard;
     final Board villainBoard;
 
+    String userName;
+    int attempts = 0;
+
 
 
     /**
@@ -46,14 +49,6 @@ public class TreasuryHuntGame {
         this.villainBoard = villainBoard;
     }
 
-    public Board getPlayerBoard() {
-        return playerBoard;
-    }
-
-    public Board getVillainBoard() {
-        return villainBoard;
-    }
-
 
 
     /**
@@ -64,7 +59,9 @@ public class TreasuryHuntGame {
         running = true;
         TreasuryHuntApp.clearScreen();
         System.out.println("Spiel gestartet. Drücke ENTER während der Zieleingabe, um zum Hauptmenü zurückzukehren.");
-        pause();
+        System.out.println("Gib deinen Namen ein: ");
+        Scanner newUser = new Scanner(System.in);
+        userName = newUser.next();
         TreasuryHuntApp.clearScreen();
 
         while (running) {
@@ -122,12 +119,14 @@ public class TreasuryHuntGame {
                     int x = playerSearch[0];
                     int y = playerSearch[1];
                     if (villainBoard.getField(x, y) == Board.TREASURE) {
+                        attempts++;
                         System.out.println();
                         System.out.println("Treffer!");
                         System.out.println();
                         villainBoard.setField(x, y, Board.HIT);
                         isFinished();
                     } else {
+                        attempts++;
                         System.out.println();
                         System.out.println("Daneben!");
                         System.out.println();
@@ -146,8 +145,9 @@ public class TreasuryHuntGame {
             if (isFinished()) {
                 System.out.println("Du hast gewonnen!");
                 System.out.println();
-                System.out.println("Drücke ENTER um zum Hauptmenü zurück zu kehren!");
+                System.out.println("Drücke ENTER um zum Hauptmenü zurückzukehren!");
                 new Scanner(System.in).nextLine();
+                TreasuryHuntApp.addScore(userName, attempts);
                 running = false;
                 break;
             }
