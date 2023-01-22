@@ -3,6 +3,7 @@ import java.util.Random;
 import java.util.Set;
 /** 
  * @author Gunnar Hormann
+ * Thanks to Marius and chatGPT for suggestions and trubbleshooting
 */
 
 /**

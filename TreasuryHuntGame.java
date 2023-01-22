@@ -5,6 +5,7 @@ import java.util.Scanner;
 
 /** 
  * @author Gunnar Hormann
+ * Thanks to Marius and chatGPT for suggestions and trubbleshooting
 */
 
 /**

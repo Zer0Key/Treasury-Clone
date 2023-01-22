@@ -14,6 +14,7 @@ import java.util.TreeMap;
 
 /** 
  * @author Gunnar Hormann
+ * Thanks to Marius and chatGPT for suggestions and trubbleshooting
 */
 
 /**

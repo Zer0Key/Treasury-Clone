@@ -1,6 +1,12 @@
 import java.util.Comparator;
 import java.util.Map;
 
+/** 
+ * @author Gunnar Hormann
+ * Thanks to Marius and chatGPT for suggestions and trubbleshooting
+*/
+
+
 public class ValueComparator implements Comparator<String> {
 
     /**
